@@ -1,0 +1,48 @@
+<div>
+    <h1>Bienvenido! </h1><h2>{{first_name}} {{last_name}}</h2>
+    <h3>Tu rol es: {{role}}</h3>
+    <a href="http://localhost:8080/api/session/logout"><h3>Logout</h3></a>
+    {{#each products}}
+        <li>
+            <strong>Title: </strong>{{this.title}} -
+        
+
+            <strong>description:  </strong>{{this.description}}- 
+            
+            <strong>thumbnail: </strong>{{this.thumbnail}}-
+            
+            <strong>price: </strong>{{this.price}}-
+          
+            <strong>stock: </strong>{{this.stock}}-
+            <strong>code: </strong>{{this.code}}-
+            <strong>category: </strong>{{this.category}}-
+            <strong>status: </strong>{{this.status}}-
+             <strong>_id: </strong>{{this._id}}-
+        </li>
+        <button>Agregar al carrito</button>
+    {{/each}}
+
+    <center>
+        {{#if hasPrevPage}}
+            <a href="/api/products?page={{prevPage}}"><button>anterior</button></a>
+        {{/if}}
+
+        {{#if hasNextPage}}
+            <a href="/api/products?page={{nextPage}}"><button>Siguiente</button></a>
+        {{/if}}
+    </center>
+    <strong>status: </strong>{{status}}
+    <br>
+    <strong>totalPages: </strong>{{totalPages}}
+    <br>
+    <strong>prevPage: </strong>{{prevPage}}
+    <br>
+    <strong>nextPage: </strong>{{nextPage}}
+    <br>
+    <strong>hasPrevPage: </strong>{{hasPrevPage}}
+    <br>
+    <strong>hasNextPage: </strong>{{hasNextPage}}
+    
+
+
+</div>

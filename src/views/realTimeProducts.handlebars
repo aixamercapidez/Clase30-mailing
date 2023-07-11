@@ -1,0 +1,36 @@
+<div>
+    <h2>Realtime Productos</h2>
+
+
+    <div>
+        <div id="listProducts"></div>
+
+    </div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    console.log('cliente conectado')
+    const socket = io()
+
+    socket.on('productos', data => {
+        console.log(data)
+
+        let div = document.getElementById('listProducts')
+        let productos = ''
+        data.forEach((product) =>{
+            productos += `<div>Title: ${product.title} - precio: ${product.price} - Description: ${product.description} </div>` 
+
+
+
+        })
+
+div.innerHTML = productos
+
+
+
+    })
+
+
+</script>
