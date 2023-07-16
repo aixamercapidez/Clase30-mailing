@@ -1,6 +1,7 @@
 const config = require('../config/objectConfig.js')
 require('dotenv').config()
 let persistance= process.env.PERSISTENCE
+
    
 
 let CartDao
@@ -10,7 +11,7 @@ let TicketDao
 
 switch (persistance) {
     case 'MONGO':
-       
+       config.persistance
         const ProductDaoMongo = require('../dao/mongo/product.mongo.js')
         const CartDaoMongo = require('../dao/mongo/cart.mongo.js')
         const ContactDaoMongo = require('../dao/mongo/contact.mongo.js')

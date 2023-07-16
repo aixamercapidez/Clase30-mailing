@@ -7,13 +7,14 @@ const sessionRouter = require('./session.router')
 const contactsRouter = require('./contacts.router')
 const { productModel } = require('../dao/mongo/model/product.model.js')
 const pruebasRouter = require('./pruebas.router.js')
+const MockingProductsRouter = require('./mock.product.router.js')
 const router = Router()
 
 
 // router.use('/', (req,res)=>{
 //     res.send('Hola mundo')
 // })
-
+router.use('/mockingproducts', MockingProductsRouter)
 router.use('/api/pruebas', pruebasRouter)
 router.use('/api/session', sessionRouter)
 router.use('/api/products', productRouter)

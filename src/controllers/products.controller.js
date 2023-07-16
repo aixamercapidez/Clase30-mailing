@@ -2,6 +2,10 @@ const {ProductsService} = require("../service/index")
 const { productModel } = require('../dao/mongo/model/product.model.js')
 const {userModel} = require('../dao/mongo/model/user.model')
 
+const CustomErrors = require("../service/errors/customErrors");
+const productEnumError = require("../service/errors/enumError");
+const { nullOrEmptyValues } = require("../service/errors/productsErrors");
+
 class ProductsController{
    getProducts= async (req, res) => {
         try {
@@ -81,12 +85,40 @@ class ProductsController{
 
   AddProduct=  async (req, res) => {
         try {
-            const newProduct = req.body
-    
-            let result = await ProductsService.addProduct(newProduct)
+            //const newProduct = req.body
+           // let result = await ProductsService.addProduct(newProduct)
+           // const {email} = req.session.user
+           // let userDB = await userModel.findOne({email})
+           // let role = userDB.role
+
+
+
+            let { title, description, price, code, stock, category,status } = req.body
+            if (!title.trim() || !price || !code || !stock || !category || !description || !status) {
+                CustomErrors.productError({
+                    name: "Product Creation Error",
+                    code: productEnumError.UNDEFINED_OR_NULL_VALUES,
+                    cause: nullOrEmptyValues(req.body),
+                    message: 'Error trying to create a new product.'
+                })
+            }
             const {email} = req.session.user
-            let userDB = await userModel.findOne({email})
-            let role = userDB.role
+             let userDB = await userModel.findOne({email})
+             let role = userDB.role
+            const newProduct = {
+                title,
+                description,
+                price: Number(price),
+                code,
+                stock: Number(stock),
+                category,
+                status,
+                thumbnail: ""
+            }
+            let result = await ProductsService.addProduct(newProduct)
+            
+    
+            
     if (role != "admin"){
         res.status(401).send({
             status: 'acces denied',
