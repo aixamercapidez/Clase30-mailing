@@ -1,4 +1,5 @@
 const passport = require('passport')
+const { CartsService } = require("../service/index")
 const local = require('passport-local')
 const { userModel } = require('../dao/mongo/model/user.model')
 const { createHash, isValidPassword } = require('../utils/bcryptHash')
@@ -19,12 +20,13 @@ const initPassport = () => {
         try {
             let userDB = await userModel.findOne({email: username})
             if (userDB) return done(null, false)
-           
+           const cart=await CartsService.addCart()
 
             let newUser = {
                 first_name,
                 last_name,
                 email: username,
+                cartID:cart._id,
                 date_of_birth,
                 role:role,
                 password: createHash(password)

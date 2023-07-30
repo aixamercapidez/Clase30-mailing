@@ -15,6 +15,10 @@ const userSchema = new Schema ({
         require:true,
         unique:true
     },
+    cartID: {
+        type: Schema.Types.ObjectId,
+        ref: 'carts'
+    },
     date_of_birth:{ Date},
     role:String,
    password:String,
