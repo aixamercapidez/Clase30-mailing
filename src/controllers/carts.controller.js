@@ -2,7 +2,7 @@ const { CartsService, TicketService } = require("../service/index")
 const { ProductsService } = require("../service/index")
 const { uuidv4 } = require('uuidv4')
 const { randomUUID } = require('crypto')
-
+const {userModel} = require("../dao/mongo/model/user.model")
 class CartsController {
     getCarts = async (req, res) => {
         try {
@@ -16,7 +16,7 @@ class CartsController {
 
 
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
 
@@ -32,7 +32,7 @@ class CartsController {
                 payload: result
             })
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
 
@@ -51,7 +51,7 @@ class CartsController {
              })*/
             res.send(cart)
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
 
@@ -79,7 +79,7 @@ class CartsController {
             })}
 
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
     DeleteProduct = async (req, res) => {
@@ -94,7 +94,7 @@ class CartsController {
             })
 
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
 
@@ -109,7 +109,7 @@ class CartsController {
             })
 
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
     UpdateCart = async (req, res) => {
@@ -123,7 +123,7 @@ class CartsController {
             })
 
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
     UpdateQuantity = async (req, res) => {
@@ -138,7 +138,7 @@ class CartsController {
             })
 
         } catch (error) {
-            console.log(error)
+            console.log("error")
         }
     }
     purchase = async (req, res) => {
@@ -146,29 +146,32 @@ class CartsController {
                 const { cid } = req.params
                 const cart = await CartsService.getCartById(cid)
                 if (!cart) return error
-
-                const leftProducts = []
-                for (const item in cart.Products) {
+                let totalCompra = 0;
+                let leftProducts = []
+                for (const item of cart.Products) {
                     const idProduct = item.idProduct
                     const quantity = item.quantity
                   // const product = await ProductsService.getProductById(idProduct)
                   //  const stock = product.stock
+                  const price = item.idProduct.price
                   const stock = item.idProduct.stock
-
+                  
                     if (quantity > stock) {
-                        leftProducts.push(idProduct)
+                        leftProducts.push(idProduct._id)
 
                     } else {
-                        const respuesta = await ProductsService.updateProduct(idProduct, {quantity: stock-quantity})
+                       // const respuesta = await ProductsService.updateProduct(idProduct, {quantity: stock-quantity})
+                       totalCompra += quantity*price
 
 
                     }
-
+                   // let  amount= await cart.Products.filter(product => !leftProducts.includes(item.idProduct)).reduce()
                 }
-               let  amount= await cart.Products.filter(product => !leftProducts.includes(item.idProduct)).reduce()
+               
 
                 const {email} = req.session.user
-                const ticket = await TicketService.newTicket(randomUUID, amount,email)
+                console.log(email)
+                const ticket = await TicketService.newTicket(randomUUID(), totalCompra,email)
                    
                    // 
                   
@@ -192,7 +195,7 @@ class CartsController {
                 })
             }
             catch {
-                return 'error'
+                console.log("error")
             }
         // try {
         //     const { CID } = req.params

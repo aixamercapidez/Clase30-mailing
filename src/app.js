@@ -10,6 +10,8 @@ const passport = require('passport')
 
 const cookieParser = require('cookie-parser')
 
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerUiExpress = require('swagger-ui-express')
 
 
  
@@ -37,6 +39,19 @@ app.use(session({
     saveUninitialized: false
 })) 
 
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentación de adoptame',
+            description: 'Esta es la documentación de adoptame'
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+}
+const specs = swaggerJsDoc(swaggerOptions)
+app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 initPassport()
 initPassortGithub()

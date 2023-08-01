@@ -32,7 +32,9 @@ Content-Type: application/json
     "code": "0002"
 }
 ###
-DELETE http://localhost:8080/api/products/6456c960eb70c1d7b7429fcb
+DELETE http://localhost:8080/api/products/64c687c733781a6af89df61a
+
+
 
 
 
@@ -46,21 +48,21 @@ POST http://localhost:8080/api/carts
 
 
 ### GET 
-GET http://localhost:8080/api/carts/6456caff02edaee996b31da1
+GET http://localhost:8080/api/carts/64c687c733781a6af89df61a
 
 
 ### POST 
-POST http://localhost:8080/api/carts/6456caff02edaee996b31da1/products/64600f478a5c8b883b5a71ac
+POST http://localhost:8080/api/carts/64c687c733781a6af89df61a/products/64600f478a5c8b883b5a71ac
 
 
 ### DELEtE
 DELETE http://localhost:8080/api/carts/6456caff02edaee996b31da1
 
 ###DELETE
-DELETE http://localhost:8080/api/carts/6456caff02edaee996b31da1/product/64600f478a5c8b883b5a71ac
+DELETE http://localhost:8080/api/carts/64c687c733781a6af89df61a/product/64600f478a5c8b883b5a71ac
 
 ### POST 
-POST http://localhost:8080/api/carts/6456caff02edaee996b31da1/purchase
+POST http://localhost:8080/api/carts/64c687c733781a6af89df61a/purchase
 
 
 
@@ -68,8 +70,9 @@ POST http://localhost:8080/api/carts/6456caff02edaee996b31da1/purchase
 ### POST 
 POST http://localhost:8080/api/session/login
 Content-Type: application/json
+
 {
-    "username": "aa@gmial.com",
+    "email": "juanp@gmail.com",
     "password":"123"
 
     
