@@ -1,0 +1,198 @@
+paths: 
+  /api/carts/:
+    get:
+      summary: Obtiene todos los carritos
+      tags: 
+        - Carts
+      responses:
+        "200":
+          description: Los carritos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: Error interno del server, usualmente generado por una query defectuosa
+    post:
+      summary: crea un carrito nuevo
+      tags: 
+        - Carts
+      responses:
+        "200":
+          description: carrito creado correctamente
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: Error interno del server, usualmente generado por una query defectuosa
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito por su cid
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El id del carrito a solicitar.
+        schema:
+          $type: String  
+      responses:
+        "200":
+          description: El Producto fue obtenido correctamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#components/schemas/Cart'
+    delete:
+      summary: Obtiene un carrito por su cid
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El id del carrito a solicitar.
+        schema:
+          $type: String  
+      responses:
+        "200":
+          description: El Producto fue obtenido correctamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#components/schemas/Cart' 
+    put:
+      summary: Se actualiza un producto en base un pid
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El cart id del usuario a actualizar
+        schema: 
+          type: sting
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateCart'
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Obtiene un productos por su pid
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El id del carrito a solicitar.
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: El id del producto a solicitar.
+        schema:
+          $type: String  
+      responses:
+        "200":
+          description: El carrito fue obtenido correctamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#components/schemas/Cart' 
+    delete:
+      summary: Obtiene un productos por su pid
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El id del carrito a solicitar.
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: El id del producto a solicitar.
+        schema:
+          $type: String  
+      responses:
+        "200":
+          description: El carrito fue obtenido correctamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#components/schemas/Cart'
+    put:
+      summary: Se actualiza un producto en base un pid
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El cart id del usuario a actualizar
+        schema: 
+          type: sting
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateQuantity'
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Genera el ticket
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: El id del carrito a solicitar.
+        schema:
+          $type: String  
+      responses:
+        "200":
+          description: El ticket se genero correctamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#components/schemas/Cart'
+components:
+  schemas: 
+    Cart: 
+      type: object
+      properties: 
+        Products:
+          type: array
+          description: listado de productos dentro del carrito
+      example:
+        Products: [{"idProduct": "64600f478a5c8b883b5a71ac","quantity": 3,"_id": "6462821d3201f1922659ff49"}]
+  requestBodies: 
+    updateCart:
+      type: object
+      properties: 
+        Products:
+          type: array
+          description: listado de productos dentro del carrito
+      example:
+        Products: [{"idProduct": "64600f478a5c8b883b5a71ac","quantity": 3,"_id": "6462821d3201f1922659ff49"}]
+    updateQuantity:
+      type: object
+      properties: 
+         quantity:
+          type: number
+          description: cantidad de productos
+      example:
+        Products: 3
