@@ -22,7 +22,11 @@ const userSchema = new Schema ({
     date_of_birth:{ Date},
     role:String,
    password:String,
-  
+   role: {
+    type: String,
+    enum: ['user', 'admin', 'premium'],
+    default: 'user'
+}
 
 })
 

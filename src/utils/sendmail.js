@@ -12,14 +12,15 @@ const transport = nodemailer.createTransport({
     }
 })
 
-exports.sendMail = async (destino, subject, html)=>{
+const sendMail = async (destino, subject, html)=>{
     return await transport.sendMail({
-        from: 'Coder Test <aixamercapidez6450@gmail.com>',
+        from: 'aixamercapidez6450@gmail.com',
         // to: 'projectodigitalgen@gmail.com',
         to: destino,
         // subject: 'Correo de prueba comsión 39750',
         subject,
         html,
+        attachments: [] 
         // html:`<div>
         //     <h1>Esto es un test</h1>
         // </div>`,
@@ -30,3 +31,4 @@ exports.sendMail = async (destino, subject, html)=>{
         // }]
     })
 }
+module.exports = sendMail

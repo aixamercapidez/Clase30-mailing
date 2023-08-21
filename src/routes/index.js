@@ -9,6 +9,8 @@ const { productModel } = require('../dao/mongo/model/product.model.js')
 const pruebasRouter = require('./pruebas.router.js')
 const loggerRouter = require('./logger.router.js')
 const MockingProductsRouter = require('./logger.router.js')
+const viewsRouter = require('./views.router.js')
+const userRouter = require('./user.router.js')
 const router = Router()
 
 
@@ -22,6 +24,8 @@ router.use('/api/session', sessionRouter)
 router.use('/api/products', productRouter)
 router.use('/api/carts', productCart)
 router.use('/api/message', messageRouter)
+router.use('/api/users', userRouter)
+router.use('/', viewsRouter)
 
 router.post('/upload',  uploader.single('myFile'),(req, res)=>{
     res.send({

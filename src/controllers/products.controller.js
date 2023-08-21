@@ -138,16 +138,21 @@ class ProductsController{
         try {
             const { pid } = req.params
             const updateProduct = req.body
-    
+            let product = await ProductsService.getProductById(pid)
             let updated = await ProductsService.updateProduct(pid, updateProduct)
+
             const {email} = req.session.user
             let userDB = await userModel.findOne({email})
+           let  userID= userDB._id.toString()
+
             let role = userDB.role
     if (role != "admin"){
+        if (product.owner.toString() !== userID) {
         res.status(401).send({
             status: 'acces denied',
             
         })
+    }
     }else{
     
             res.status(200).send({
@@ -162,16 +167,22 @@ class ProductsController{
         try {
             const { pid } = req.params
             let product = await ProductsService.deleteProduct(pid)
-
+            let product1 = await ProductsService.getProductById(pid)
             const {email} = req.session.user
             let userDB = await userModel.findOne({email})
             let role = userDB.role
-    if (role != "admin"){
+            let  userID= userDB._id.toString()
+    if (role != "admin" ){
+        
         res.status(401).send({
             status: 'acces denied',
             
         })
-    }else{
+    }else if (product1.owner.toString() !== userID) {res.status(401).send({
+        status: 'acces denied',
+        
+    })}
+    else{
             res.status(200).send({
                 status: 'success',
                 payload: product

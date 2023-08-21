@@ -23,7 +23,12 @@ const productSchema = new Schema({
     status: {
         type:String,
         
-    }
+    },
+    owner: {
+        type: Schema.Types.String,
+        ref: 'usuarios',
+        default: 'ADMIN'
+    },
 })
 
 productSchema.plugin(mongoosePaginate)

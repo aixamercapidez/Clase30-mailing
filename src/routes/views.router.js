@@ -67,5 +67,22 @@ router.get('/register', (req, res) => {
     })
 })
 
+const restoreView = {
+    title: "Restore Password",
+    style: "restore.css",
+    script: "restore.js"
+}
 
+router.get('/api/session/restore', (req, res) => {
+    res.render('restore', restoreView)
+})
+
+const newPassView = {
+    title: "New Password",
+    style: "new_pass.css",
+    script: 'newpass.js'
+}
+router.get('/api/session/restore/:UID', (req, res) => {
+    res.render('newPass',newPassView)
+})
 module.exports = router

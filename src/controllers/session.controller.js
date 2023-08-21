@@ -1,3 +1,7 @@
+const {userModel} = require('../dao/mongo/model/user.model')
+const { createHash, isValidPassword } = require('../utils/bcryptHash')
+const { UserService } = require("../service/index");//
+const sendMail = require('../utils/sendmail')
 class SessionController {
     login = async (req, res) => {
         if (!req.user) return res.status(401).send({ status: 'error', message: 'invalid credential' })
@@ -33,17 +37,19 @@ class SessionController {
         })
     }
 
-    current = (req, res) => {
+    current =  async(req, res) => {
         const { first_name } = req.session.user
         const { last_name } = req.session.user
         const { email } = req.session.user
-
+        let userDB = await userModel.findOne({email})
+        let cartId = userDB.cartID
         const { role } = req.session.user
         res.send({
             first_name,
             last_name,
             email,
             role,
+            cartId,
         })
     }
 
@@ -60,6 +66,96 @@ class SessionController {
     privada = (req, res) => {
 
         res.send('Todo lo que esta acá solo lo puede ver un admin loagueado')
+    }
+
+    restore = async (req, res) => {
+        try {
+            
+            const { body: { email } } = req
+
+            let user = await userModel.findOne({email})
+            //const userID = user?.nonSensitiveUser.userID
+            //const userID = userDB._id
+            const useremail = user.email
+            let userID = user._id.toString()
+            
+            if (!useremail) throw new Error("Can't find the user")
+
+         
+
+            const URL = `http://localhost:8080/api/session/restore/${userID}`
+
+            const html = `
+                <center>
+                    <p>
+                        Se ah solicitado un cambio de contraseña
+                    </p>
+                    <p>
+                        Ingrese al siguiente enlace para cambiar su contraseña: <a>${URL}</a>
+                        <h6>Este enlace tiene una fecha de expiración de 1hr</h6>
+                    </p>
+                    <p>
+                        Si usted no mandó un correo para cambiar la contraseña, por favor envíe un email
+                    </p>
+                </center>
+            `
+            
+            sendMail(useremail, "Change Password", html)
+            
+            res.send("Mail enviado correctamente")
+            console.log("mail enviado")
+        } catch (error) {
+            console.log("error")
+        }
+    }
+
+    newPass = async (req, res) => {
+        try {
+            const {UID} = req.params
+            const { body: { password } } = req
+            console.log(UID)
+            console.log(password)
+           // const {  password: hashedPassword } = await userModel.findOne({email})
+          // let user = await userModel.findOne({UID})
+         let user= await userModel.findById(UID).lean()
+           const email=user.email
+           const hashedPassword = user.password
+           console.log(hashedPassword)
+
+            const validPassword = isValidPassword(password, user)
+            
+            if (validPassword) throw new Error("Passwords are equal")
+
+            const newPassword = createHash(password)
+            
+            await UserService.changePassword({ email, newPassword })
+
+            res.send("Se cambió la contraseña")
+            console.log("Se cambió la contraseña")
+        } catch (error) {
+            console.log("error")
+        }
+    }
+
+    updateRol = async (req, res, next) => {
+        try {
+            const { params: { UID } } = req
+           
+            const { nonSensitiveUser } = await await userModel.findById(UID).lean() ?? {}
+
+            if (!nonSensitiveUser) {
+                throw new Error("User doesn't exists")
+            }
+
+            
+
+            nonSensitiveUser.role == "user" ? nonSensitiveUser.role = "premium" : nonSensitiveUser.role === "premium" ? nonSensitiveUser.role = "user" : null
+            const newRole = await UserService.updateUser(UID, nonSensitiveUser)
+
+            res.status(200).sendSuccess(newRole)
+        } catch (error) {
+            next(error)
+        }
     }
 
 }

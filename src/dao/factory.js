@@ -8,6 +8,7 @@ let CartDao
 let ProductDao
 let ContactDao
 let TicketDao
+let UserDao
 
 switch (persistance) {
     case 'MONGO':
@@ -16,12 +17,14 @@ switch (persistance) {
         const CartDaoMongo = require('../dao/mongo/cart.mongo.js')
         const ContactDaoMongo = require('../dao/mongo/contact.mongo.js')
         const TicketDaoMongo = require('../dao/mongo/ticket.mongo.js')
+        const UserDaoMongo = require('../dao/mongo/user.mongo.js')
 
 
         ProductDao = ProductDaoMongo
         CartDao = CartDaoMongo
         ContactDao = ContactDaoMongo
         TicketDao = TicketDaoMongo
+        UserDao = UserDaoMongo
 
         break;
 
@@ -42,5 +45,6 @@ module.exports={
     CartDao,
     ProductDao,
     ContactDao,
-    TicketDao
+    TicketDao,
+    UserDao
 }

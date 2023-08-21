@@ -59,17 +59,19 @@ class CartsController {
         try {
             const { cid } = req.params
             const { pid } = req.params
-
+            let product = await ProductsService.getProductById(pid)
             const cart = await CartsService.addProduct(cid, pid)
 
             const {email} = req.session.user
             let userDB = await userModel.findOne({email})
             let role = userDB.role
+            let  userID= userDB._id.toString()
     if (role != "user"){
+        if (product.owner.toString() !== userID) {
         res.status(401).send({
             status: 'acces denied',
             
-        })
+        })}
     }else{
 
 

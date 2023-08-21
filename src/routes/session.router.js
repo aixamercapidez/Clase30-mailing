@@ -6,7 +6,7 @@ const passport = require('passport')
 const { passportAuth } = require('../config/passportAuth')
 const { authorizaton } = require('../config/passportAuthorization')
 const router = Router()
-const{login, failurelogin,register,failure,logout,current,counter,privada}= require("../controllers/session.controller")
+const{login, failurelogin,register,failure,logout,current,counter,privada, restore, newPass}= require("../controllers/session.controller")
 
 
 router.post('/login', passport.authenticate('login', {failureRedirect:'/failurelogin'}), login )   
@@ -19,11 +19,7 @@ router.post('/register', passport.authenticate('register', {
 }), register)
 
 router.get('/failure', failure)
-
 router.get('/logout', logout)
-
-
-
 router.get('/current', current)
 
 router.get('/github', passport.authenticate('github', {scope: ['user:email']}), ()=>{})
@@ -38,5 +34,11 @@ router.get('/githubcallback', passport.authenticate('github', {failureRedirect: 
 router.get('/counter',counter )
 
 router.get('/privada', auth, privada)
+router.post('/restore', restore)
+router.put('/restore/:UID', newPass)
+
+
+
+    
 
 module.exports = router
