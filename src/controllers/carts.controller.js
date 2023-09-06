@@ -74,6 +74,9 @@ class CartsController {
         try {
             const { cid } = req.params
             const { pid } = req.params
+
+
+            
             let product = await ProductsService.getProductById(pid)
             const cart = await CartsService.addProduct(cid, pid)
 
@@ -86,7 +89,7 @@ class CartsController {
             //     payload: cart
             // })
           
-            res.redirect(`http://localhost:8080/api/carts/${cid}`)
+            res.redirect(`/api/carts/${cid}`)
 
         } catch (error) {
             console.log("error")
@@ -103,7 +106,7 @@ class CartsController {
             //     status: 'success',
             //     payload: cart
             // })
-            res.redirect(`http://localhost:8080/api/carts/${cid}`)
+            res.redirect(`/api/carts/${cid}`)
         } catch (error) {
             console.log("error")
         }

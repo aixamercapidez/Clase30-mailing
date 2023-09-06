@@ -2,7 +2,7 @@
     <h1>Bienvenido! </h1><h2>{{first_name}} {{last_name}}</h2>
     <h3>Tu rol es: {{role}}</h3>
     
-    <a href="http://localhost:8080/api/session/logout"><h3>Logout</h3></a>
+    <a href="/api/session/logout"><h3>Logout</h3></a>
     {{#each products}}
         <li>
             <strong>Title: </strong>{{this.title}} -
@@ -20,8 +20,8 @@
             <strong>status: </strong>{{this.status}}-
              <strong>_id: </strong>{{this._id}}-
         </li>
-        <a href="http://localhost:8080/product/{{this._id}}"> <button>ver producto</button></a>
-        <a href="http://localhost:8080/api/products/delete/{{this._id}}"><button>eliminar producto</button></a>
+        <a href="/product/{{this._id}}"> <button>ver producto</button></a>
+        <a href="/api/products/delete/{{this._id}}"><button>eliminar producto</button></a>
     {{/each}}
 
     <center>

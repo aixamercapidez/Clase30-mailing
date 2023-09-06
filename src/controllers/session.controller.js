@@ -21,7 +21,7 @@ class SessionController {
         }
         const user2 = await UserService.updateUser(userID, last_connection)
         //res.send({ status: 'success', message: 'user register' })
-        res.redirect('http://localhost:8080/home')
+        res.redirect('/home')
     }
 
     failurelogin = (req, res) => {
@@ -49,7 +49,7 @@ class SessionController {
             if (err) {
                 return res.send({ status: 'error', error: err })
             }
-            res.redirect('http://localhost:8080/login')
+            res.redirect('/login')
         })
     }
 
@@ -99,7 +99,7 @@ class SessionController {
 
          
 
-            const URL = `http://localhost:8080/api/session/restore/${userID}`
+            const URL = `/api/session/restore/${userID}`
 
             const html = `
                 <center>
