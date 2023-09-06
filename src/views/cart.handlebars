@@ -1,0 +1,23 @@
+<div>
+    <h1>Bienvenido! </h1><h2>{{first_name}} {{last_name}}</h2>
+    <h3>Tu rol es: {{role}}</h3>
+    
+   
+     {{#each Products}}
+        <li>
+            <strong>Title: </strong>{{idProduct.title}} -
+        
+
+            <strong>quantity:  </strong>{{this.quantity}}- 
+
+           
+            
+        </li>
+        
+        <a href="http://localhost:8080/api/carts/delete/{{cid}}/product/{{idProduct._id}}"><button>eliminar producto</button></a>
+    {{/each}}
+    <br>
+    <br>
+<a href="http://localhost:8080/api/carts/{{cid}}/purchase"> <button>realizar compra</button></a>
+<a href="http://localhost:8080/api/products/"> <button>volver a los productos</button></a>
+</div>

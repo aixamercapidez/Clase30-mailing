@@ -4,6 +4,7 @@ const { UserService } = require("../service/index");//
 const sendMail = require('../utils/sendmail')
 class SessionController {
     login = async (req, res) => {
+        
         if (!req.user) return res.status(401).send({ status: 'error', message: 'invalid credential' })
         req.session.user = {
             first_name: req.user.first_name,
@@ -12,7 +13,15 @@ class SessionController {
 
 
         }
-        res.send({ status: 'success', message: 'user register' })
+        const email= req.session.user.email
+        let user1 = await userModel.findOne({email})
+        let userID = user1._id.toString()
+        const last_connection = {
+            last_connection: new Date().toLocaleString('es-MX')
+        }
+        const user2 = await UserService.updateUser(userID, last_connection)
+        //res.send({ status: 'success', message: 'user register' })
+        res.redirect('http://localhost:8080/home')
     }
 
     failurelogin = (req, res) => {
@@ -28,7 +37,14 @@ class SessionController {
         res.send({ status: 'error' })
     }
 
-    logout = (req, res) => {
+    logout = async(req, res) => {
+        const email= req.session.user.email
+        let user1 = await userModel.findOne({email})
+        let userID = user1._id.toString()
+        const last_connection = {
+            last_connection: new Date().toLocaleString('es-MX')
+        }
+        const user = await UserService.updateUser(userID, last_connection)
         req.session.destroy(err => {
             if (err) {
                 return res.send({ status: 'error', error: err })

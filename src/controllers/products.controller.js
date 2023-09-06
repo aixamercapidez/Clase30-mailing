@@ -1,54 +1,55 @@
-const {ProductsService} = require("../service/index")
+const { ProductsService } = require("../service/index")
 const { productModel } = require('../dao/mongo/model/product.model.js')
-const {userModel} = require('../dao/mongo/model/user.model')
-
+const { userModel } = require('../dao/mongo/model/user.model')
+const sendMail = require('../utils/sendmail')
 const CustomErrors = require("../service/errors/customErrors");
 const productEnumError = require("../service/errors/enumError");
 const { nullOrEmptyValues } = require("../service/errors/productsErrors");
 
-class ProductsController{
-   getProducts= async (req, res) => {
+class ProductsController {
+    getProducts = async (req, res) => {
         try {
-           
-    
-          
-            const {first_name} = req.session.user
-            const {last_name} = req.session.user
-            const {email} = req.session.user
-            let userDB = await userModel.findOne({email})
+
+
+
+            const { first_name } = req.session.user
+            const { last_name } = req.session.user
+            const { email } = req.session.user
+            let userDB = await userModel.findOne({ email })
             let role = userDB.role
+            let cartID = userDB.cartID
             //const {role} = req.session.user
-            
-            
+
+
             const { page = 1 } = req.query
             const { limit = 10 } = req.query
-            const {category} = req.query
-            const {status} = req.query
+            const { category } = req.query
+            const { status } = req.query
             const { sort } = req.query
             let sortOptions
             if (sort === 'asc') {
-    
+
                 sortOptions = { price: 1 };
-    
+
             } else if (sort === 'desc') {
-    
+
                 sortOptions = { price: -1 };
-    
+
             }
-    let query ={}
-            if(category){
-                query={category:category}
+            let query = {}
+            if (category) {
+                query = { category: category }
             }
-            if(status){
-                query={status:status}
+            if (status) {
+                query = { status: status }
             }
-           let products = await productModel.paginate(query,{ limit: limit, page: page, lean: true,sort: sortOptions})
-  //  let products = await ProductsService.getProducts()
-            
+            let products = await productModel.paginate(query, { limit: limit, page: page, lean: true, sort: sortOptions })
+            //  let products = await ProductsService.getProducts()
+
             const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } = products
-          
-            
-        
+
+
+
 
 
 
@@ -62,15 +63,16 @@ class ProductsController{
                 totalPages,
                 first_name,
                 last_name,
-                role
+                role,
+                cartID
             })
-        
+
         } catch (error) {
             console.log(error)
         }
     }
 
-   getById= async (req, res) => {
+    getById = async (req, res) => {
         try {
             const { pid } = req.params
             let product = await ProductsService.getProductById(pid)
@@ -83,28 +85,29 @@ class ProductsController{
         }
     }
 
-  AddProduct=  async (req, res) => {
+    AddProduct = async (req, res) => {
         try {
             //const newProduct = req.body
-           // let result = await ProductsService.addProduct(newProduct)
-           // const {email} = req.session.user
-           // let userDB = await userModel.findOne({email})
-           // let role = userDB.role
+            // let result = await ProductsService.addProduct(newProduct)
+            // const {email} = req.session.user
+            // let userDB = await userModel.findOne({email})
+            // let role = userDB.role
 
 
 
-            let { title, description, price, code, stock, category,status } = req.body
-            if (!title.trim() || !price || !code || !stock || !category || !description || !status) {
-                CustomErrors.productError({
-                    name: "Product Creation Error",
-                    code: productEnumError.UNDEFINED_OR_NULL_VALUES,
-                    cause: nullOrEmptyValues(req.body),
-                    message: 'Error trying to create a new product.'
-                })
-            }
-            const {email} = req.session.user
-             let userDB = await userModel.findOne({email})
-             let role = userDB.role
+            let { title, description, price, code, stock, category, status } = req.body
+            // if (!title.trim() || !price || !code || !stock || !category || !description || !status) {
+            //     CustomErrors.productError({
+            //         name: "Product Creation Error",
+            //         code: productEnumError.UNDEFINED_OR_NULL_VALUES,
+            //         cause: nullOrEmptyValues(req.body),
+            //         message: 'Error trying to create a new product.'
+            //     })
+            // }
+            const { email } = req.session.user
+            let userDB = await userModel.findOne({ email })
+            const role = userDB.role
+            const id = userDB._id
             const newProduct = {
                 title,
                 description,
@@ -113,84 +116,103 @@ class ProductsController{
                 stock: Number(stock),
                 category,
                 status,
-                thumbnail: ""
+                thumbnail: "",
+                owner: String(id),
             }
-            let result = await ProductsService.addProduct(newProduct)
-            
-    
-            
-    if (role != "admin"){
-        res.status(401).send({
-            status: 'acces denied',
-            
-        })
-    }else{
-            res.status(200).send({
-                status: 'success',
-                payload: result
-            })}
+
+            console.log(newProduct)
+
+
+            if (role === "user") {
+                res.status(401).send({
+                    status: 'acces denied',
+
+                })
+            } else {
+                const result = await ProductsService.addProduct(newProduct)
+                res.status(200).send({
+                    status: 'success',
+                    payload: result
+                })
+            }
         } catch (error) {
             console.log(error)
         }
     }
 
-   UpdateProduct= async (req, res) => {
+    UpdateProduct = async (req, res) => {
         try {
             const { pid } = req.params
             const updateProduct = req.body
             let product = await ProductsService.getProductById(pid)
             let updated = await ProductsService.updateProduct(pid, updateProduct)
 
-            const {email} = req.session.user
-            let userDB = await userModel.findOne({email})
-           let  userID= userDB._id.toString()
+            const { email } = req.session.user
+            let userDB = await userModel.findOne({ email })
+            let userID = userDB._id.toString()
 
             let role = userDB.role
-    if (role != "admin"){
-        if (product.owner.toString() !== userID) {
-        res.status(401).send({
-            status: 'acces denied',
-            
-        })
-    }
-    }else{
-    
-            res.status(200).send({
-                status: 'success',
-                payload: updated
-            })}
+            if (role != "admin") {
+                if (product.owner.toString() !== userID) {
+                    res.status(401).send({
+                        status: 'acces denied',
+
+                    })
+                }
+            } else {
+
+                res.status(200).send({
+                    status: 'success',
+                    payload: updated
+                })
+            }
         } catch (error) {
             console.log(error)
         }
     }
-  DeleteProduct=  async (req, res) => {
+    DeleteProduct = async (req, res) => {
         try {
             const { pid } = req.params
-            let product = await ProductsService.deleteProduct(pid)
+
             let product1 = await ProductsService.getProductById(pid)
-            const {email} = req.session.user
-            let userDB = await userModel.findOne({email})
+            const { email } = req.session.user
+            let userDB = await userModel.findOne({ email })
             let role = userDB.role
-            let  userID= userDB._id.toString()
-    if (role != "admin" ){
-        
-        res.status(401).send({
-            status: 'acces denied',
-            
-        })
-    }else if (product1.owner.toString() !== userID) {res.status(401).send({
-        status: 'acces denied',
-        
-    })}
-    else{
-            res.status(200).send({
-                status: 'success',
-                payload: product
-            })}
+            let userID = userDB._id.toString()
+
+            if (role === "user") {
+
+                res.status(401).send({
+                    status: 'acces denied',
+
+                })
+            } else if (product1.owner !== userID) {
+                res.status(401).send({
+                    status: 'acces denied',
+
+                })
+            }
+            else {
+                const html = `
+                <center>
+                    <p>
+                        Se elimino el producto ${pid}
+                    </p>
+                   
+                </center>
+            `
+
+                sendMail(email, "Product deleted", html)
+                let product = await ProductsService.deleteProduct(pid)
+                res.status(200).send({
+                    status: 'success',
+                    payload: product
+                })
+            }
         } catch (error) {
             console.log(error)
         }
     }
 }
 
-module.exports= new ProductsController()
+module.exports = new ProductsController()

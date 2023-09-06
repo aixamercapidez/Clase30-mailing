@@ -2,6 +2,7 @@ const { CartsService, TicketService } = require("../service/index")
 const { ProductsService } = require("../service/index")
 const { uuidv4 } = require('uuidv4')
 const { randomUUID } = require('crypto')
+const sendMail = require('../utils/sendmail')
 const {userModel} = require("../dao/mongo/model/user.model")
 class CartsController {
     getCarts = async (req, res) => {
@@ -40,16 +41,30 @@ class CartsController {
         try {
             const { cid } = req.params
             const cart = await CartsService.getCartById(cid)
-            /* res.render('carts', {
-                 status: 'success',
-                 payload: cart,
-                 carts: cart
-             })*/
+            const { Products } = await CartsService.getCartById(cid)
+            const { first_name } = req.session.user
+            const { last_name } = req.session.user
+            const { email } = req.session.user
+            let userDB = await userModel.findOne({ email })
+            let role = userDB.role
+            let cartID = userDB.cartID
+            res.render('cart', {
+                first_name,
+                last_name,
+                email,
+                Products,
+                role,
+                cid,
+                
+                
+            
+
+        })
             /* res.status(200).send({
                  status: 'success',
                  payload: cart
              })*/
-            res.send(cart)
+           // res.send(cart)
         } catch (error) {
             console.log("error")
         }
@@ -62,39 +77,33 @@ class CartsController {
             let product = await ProductsService.getProductById(pid)
             const cart = await CartsService.addProduct(cid, pid)
 
-            const {email} = req.session.user
-            let userDB = await userModel.findOne({email})
-            let role = userDB.role
-            let  userID= userDB._id.toString()
-    if (role != "user"){
-        if (product.owner.toString() !== userID) {
-        res.status(401).send({
-            status: 'acces denied',
             
-        })}
-    }else{
+   
 
 
-            res.status(200).send({
-                status: 'success',
-                payload: cart
-            })}
+            // res.status(200).send({
+            //     status: 'success',
+            //     payload: cart
+            // })
+          
+            res.redirect(`http://localhost:8080/api/carts/${cid}`)
 
         } catch (error) {
             console.log("error")
         }
     }
+
     DeleteProduct = async (req, res) => {
         try {
             const { cid } = req.params
             const { pid } = req.params
 
             const cart = await CartsService.deleteProduct(cid, pid)
-            res.status(200).send({
-                status: 'success',
-                payload: cart
-            })
-
+            // res.status(200).send({
+            //     status: 'success',
+            //     payload: cart
+            // })
+            res.redirect(`http://localhost:8080/api/carts/${cid}`)
         } catch (error) {
             console.log("error")
         }
@@ -189,6 +198,16 @@ class CartsController {
                     await CartsService.deleteCart(cid)
                 }
 
+
+                const html = `
+                <center>
+                    <p>
+                        enviamos su ticket ${ticket}
+                    </p>
+                   
+                </center>
+            `
+                sendMail(email, "ticket", html)
                 res.send({
                     status: 'succes',
                     payload:ticket

@@ -25,9 +25,9 @@ const productSchema = new Schema({
         
     },
     owner: {
-        type: Schema.Types.String,
-        ref: 'usuarios',
-        default: 'ADMIN'
+        type: String,
+        
+        
     },
 })
 

@@ -27,12 +27,6 @@ router.use('/api/message', messageRouter)
 router.use('/api/users', userRouter)
 router.use('/', viewsRouter)
 
-router.post('/upload',  uploader.single('myFile'),(req, res)=>{
-    res.send({
-        status: 'successs', 
-        mensaje: 'Archivo subido con éxitos'
-    })
-} )
 
 router.use('/api/contacts', contactsRouter)
 

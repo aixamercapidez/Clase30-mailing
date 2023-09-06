@@ -12,11 +12,11 @@ class UserManager {
         }
     }
 
-    getUsers = async (query) => {
+    async getUsers() {
         try {
-            return await userModel.paginate(query[0], query[1])
-        } catch (error) {
-            throw error
+            return await userModel.find({})
+        } catch (err) {
+            return new Error(err)
         }
     }
 
@@ -39,7 +39,7 @@ class UserManager {
 
     updateUser = async (id, body) => {
         try {
-            return await userModel.findOneAndUpdate({ _id: id }, { $set: body }, { returnDocument: "after" })
+            return await userModel.findOneAndUpdate({ _id: id }, { $set: body })
         } catch (error) {
             throw error
         }

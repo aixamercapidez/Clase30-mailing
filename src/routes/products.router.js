@@ -15,6 +15,6 @@ router.post('/', AddProduct)
 
 router.put('/:pid', UpdateProduct)
 
-router.delete('/:pid',DeleteProduct )
+router.get('/delete/:pid',DeleteProduct )
 
 module.exports = router

@@ -32,7 +32,7 @@ Content-Type: application/json
     "code": "0002"
 }
 ###
-DELETE http://localhost:8080/api/products/64c687c733781a6af89df61a
+DELETE http://localhost:8080/api/products/64f7a75cd374fb613a96ec45
 
 
 
@@ -48,7 +48,7 @@ POST http://localhost:8080/api/carts
 
 
 ### GET 
-GET http://localhost:8080/api/carts/64c687c733781a6af89df61a
+GET http://localhost:8080/api/carts/6456caff02edaee996b31da1
 
 
 ### POST 
@@ -72,7 +72,7 @@ POST http://localhost:8080/api/session/login
 Content-Type: application/json
 
 {
-    "email": "juanp@gmail.com",
+    "email": "aixamercapidez6450@gmail.com",
     "password":"123"
 
     
@@ -91,3 +91,9 @@ Content-Type: application/json
     "message": "hola!"
     
 }
+
+
+//users
+
+### DELEtE
+DELETE http://localhost:8080/api/users/delete

@@ -5,21 +5,9 @@ class UserRepository {
         this.dao = dao
     }
 
-    getUsers = async (query) => {
-        try {
-            //retirar la contraseña
-            const { docs, ...pagination } = await this.dao.getUsers(query)
-
-            let normalizedUser = []
-            for (let user of docs) {
-
-                const { password, ...userData } = new UserDTO(user)
-                normalizedUser.push(userData)
-            }
-            return { normalizedUser, pagination }
-        } catch (error) {
-            throw error
-        }
+    getUsers = async ()=>{
+        let result = await this.dao.getUsers()
+        return result
     }
 
     addUser = async (userData) => {
@@ -55,8 +43,8 @@ class UserRepository {
     updateUser = async (UID, body) => {
         try {
             const updatedUser = await this.dao.updateUser(UID, body)
-            const { password, ...user } = new UserDTO(updatedUser)
-            return user
+            //const { password, ...user } = new UserDTO(updatedUser)
+            return updatedUser
         } catch (error) {
             throw error
         }

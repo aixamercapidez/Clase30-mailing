@@ -1,0 +1,55 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin panel</title>
+  </head>
+  <body>
+    <div class="table-responsive-lg">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">UID</th>
+            <th scope="col">First Name</th>
+            <th scope="col">User Rol</th>
+            <th scope="col">Email</th>
+            <th scope="col">Last Connection</th>
+           
+            <th scope="col">cambiar rol</th>
+            <th scope="col">Eliminar Cuenta</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each normalizedUsers}}
+            <tr>
+              <td>{{this._id}}</td>
+              <td>{{this.first_name}}</td>
+              <td>{{this.role}}</td>
+              <td>{{this.email}}</td>
+              <td>{{this.last_connection}}</td>
+            
+              <td>
+               <a href="http://localhost:8080/api/users/premium/{{this._id}}"> <button
+                  type="button"
+                  class="btn btn-success"
+                  id="upgrade"
+                  value="{{this._id}}"
+                >cambiar rol
+                </button></a>
+              </td>
+              <td>
+              <a href="http://localhost:8080/api/users/delete/{{this._id}}"> <button
+                  type="button"
+                  class="btn btn-danger"
+                  id="delete"
+                  value="{{this._id}}"
+                >Eliminar Cuenta</button></a> 
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <script src="/static/js/{{script}}"></script>
+  </body>
+</html>
