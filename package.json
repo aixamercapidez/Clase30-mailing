@@ -5,7 +5,7 @@
   "scripts": {
     
     "dev": "nodemon src/app",
-    "start": "nodemon ./src/app.js",
+    "start": "node ./src/app.js",
     "test": "mocha test/cartsTest/cartsTest.js"
   },
   "keywords": [],
