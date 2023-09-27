@@ -1,10 +1,9 @@
 const { Router } = require('express')
 const { auth } = require('../middlewares/autenticacion.middleware')
-const { userModel } = require('../dao/mongo/model/user.model')
-const {createHash, isValidPassword}=require('../utils/bcryptHash')
+
 const passport = require('passport')
-const { passportAuth } = require('../config/passportAuth')
-const { authorizaton } = require('../config/passportAuthorization')
+
+
 const router = Router()
 const{login, failurelogin,register,failure,logout,current,counter,privada, restore, newPass}= require("../controllers/session.controller")
 

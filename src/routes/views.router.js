@@ -1,8 +1,7 @@
 const { Router } = require('express')
 const { ProductsService } = require("../service/index")
-const { userModel } = require('../dao/mongo/model/user.model')
-const { UserService } = require("../service/index.js");
-const CartManager = require('../dao/mongo/cart.mongo.js')
+
+
 const {
 
     uploader,
@@ -46,7 +45,7 @@ router.get('/register', (req, res) => {
 })
 
 router.post('/register', (req, res) => {
-    // const {name, email, password} = req.body
+  
     const user = req.body
     res.send({
         user,
@@ -108,17 +107,7 @@ router.get('/api/users/:UID/documents', (req, res) => {
 
 
 router.get('/adminpanel', async (req, res) => {
-    // const normalizedUsers = await UserService.getUsers()
-    // const adminpanel1 = {
-    //     normalizedUsers,
 
-    //     style: "adminpanel.css",
-    //     script: "adminpanel.js"
-    // }
-
-
-    //const { normalizedUsers } = await UserService.getUsers()
-    // const pages = pageBuilder(req, pagination)
 
 
     const { page = 1 } = req.query

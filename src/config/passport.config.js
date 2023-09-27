@@ -7,7 +7,7 @@ const GithubStrategy = require('passport-github2')
 const LocalStrategy = local.Strategy
 
 const initPassport = () => {
-    // vamos a conf  registro 
+    
     passport.use('register', new LocalStrategy({
         passReqToCallback: true,
         usernameField: 'email'

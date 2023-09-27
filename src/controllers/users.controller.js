@@ -1,11 +1,11 @@
 const { userModel } = require('../dao/mongo/model/user.model')
 
-const { UserService } = require("../service/index");//
+const { UserService } = require("../service/index");
 const sendMail = require('../utils/sendmail')
 class UserController {
     getUsers = async (req, res) => {
         try {
-            //const users = await UserService.getUsers()
+            
 
             const { page = 1 } = req.query
             const { limit = 10 } = req.query
@@ -50,10 +50,7 @@ class UserController {
                 totalPages,
 
             })
-            // res.status(200).send({
-            //     status: 'success',
-            //     payload: users
-            // })
+           
 
 
 
@@ -80,13 +77,11 @@ class UserController {
                 const last_connectionDate = splitedLast_Connection[0].split("/").reverse().join("-")
                 const last_connection = last_connectionDate.concat(splitedLast_Connection[1])
 
-                /*Para los días*/
-                // const userLastConnectionDate = new Date(last_connection)
-                // const days = 1000 * 60 * 60 * 24
+                
                 const userLastConnectionHour = new Date(last_connection)
                
                 const actualHour = new Date()
-                //const userLastConnectionHour = new Date(userconect)
+                
 
 
 
@@ -117,12 +112,12 @@ class UserController {
     }
     deleteUser = async (req, res, next) => {
         try {
-            //extrae el UID de los params
+          
             
             const { UID } = req.params
             
 
-            //Valida que el UID sea un objectID válido
+         
             
             const deleted = await UserService.deleteUser(UID)
 
@@ -147,32 +142,22 @@ class UserController {
             let update
             if (nonSensitiveUser.role === 'user') {
                 console.log("toy aca")
-                // const rolechange = nonSensitiveUser
-                // rolechange.role = "premium"
-
-                // nonSensitiveUser.role = "premium"
-                // const newRole = await UserService.updateUser(UID, rolechange)
+                
                 update = {"role":"premium"}
                 console.log(update)
-                //const newRole = await UserService.updateUser(UID, update)
-               // res.send(newRole)
+               
             }
             if (nonSensitiveUser.role === 'premium')  {
 
-                // nonSensitiveUser.role = "user"
-                // const newRole = await UserService.updateUser(UID, nonSensitiveUser)
+               
                 update = {"role":"user"}
                 console.log(update)
-                //const newRole = await UserService.updateUser(UID, update)
-               // res.send(newRole)
+               
             }
 
             const newRole = await UserService.updateUser(UID, update)
             res.send(newRole)
-            //nonSensitiveUser.role == "user" ? nonSensitiveUser.role = "premium" : nonSensitiveUser.role === "premium" ? nonSensitiveUser.role = "user" : null
-           // const newRole = await UserService.updateUser(UID, nonSensitiveUser)
-
-           // res.status(200).send(newRole)
+           
             console.log("usuario cambiado correctamente")
         } catch (error) {
             console.log("error")
@@ -180,58 +165,14 @@ class UserController {
     }
 
     document = async (req, res) => {
-        // try {
-        //     const { params: { UID } } = req
-        //     const { nonSensitiveUser } = await UserService.findUser(UID) ?? {}
-        //     if (!nonSensitiveUser) throw new Error('User not found')
-
-        //     const identify = req.files?.identify
-        //     const address = req.files?.address
-        //     const bankStatement = req.files?.bankStatement
-
-        //     if (!identify && !address && !bankStatement) throw new Error('At least one document should be uploaded')
-
-        //     const documents = []
-        //     let response = "Next documents were uploaded successfully:"
-
-        //     if (identify) {
-        //         documents.push({ name: identify[0].filename, reference: identify[0].path })
-        //         if (documents.length > 1) {
-        //             response = response.concat(", ", "Identify")
-        //         } else {
-        //             response = response.concat(" ", "Identify")
-        //         }
-        //     }
-        //     if (address) {
-        //         documents.push({ name: address[0].filename, reference: address[0].path })
-        //         if (documents.length > 1) {
-        //             response = response.concat(", ", "Address")
-        //         } else {
-        //             response = response.concat(" ", "Address")
-        //         }
-        //     }
-        //     if (bankStatement) {
-        //         documents.push({ name: bankStatement[0].filename, reference: bankStatement[0].path })
-        //         if (documents.length > 1) {
-        //             response = response.concat(", ", "Bank Statement")
-        //         } else {
-        //             response = response.concat(" ", "Bank Statement")
-        //         }
-        //     }
-
-        //     await UserService.updateDocuments(UID, documents)
-        //     res.status(202).send(response)
-        // } catch (error) {
-        //     console.log("error")
-        // }
+       
 
         try {
             const { UID } = req.params;
 
             let user = await UserService.findUser(UID);
 
-            //console.log(req.files);
-
+           
             if (!user) {
                 console.log("Usuario inexistente");
                 return res.status(404).send({ status: "error", message: "Usuario inexistente" });
@@ -242,8 +183,7 @@ class UserController {
             for (const [key, value] of Object.entries(req.files)) {
                 console.log(key, value);
                 console.log("ok")
-                //console.log(user.documents.some((document) => document.name.includes(key)));
-                //valido si ya se cargo una imagen para ese tipo de archivo. si ya se cargo la piso.
+                
                 if (user.documents.some((document) => document.name.includes(key))) {
                     const existingDocumentIndex = user.documents.findIndex((document) => document.name.includes(key));
                     let nameMatchingDocument = user.documents[existingDocumentIndex].name;
@@ -260,7 +200,7 @@ class UserController {
                 status: "success",
                 payload: `Archivos subidos correctamente.`,
             });
-            //res.sendSuccess(result);
+            
         } catch (error) {
             console.log("error en controller")
         }

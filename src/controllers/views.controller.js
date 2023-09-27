@@ -1,4 +1,4 @@
-const {  UserService } = require("../service/index.js");
+const {UserService} = require("../service/index.js");
 
 
 class viewsController { 

@@ -60,11 +60,7 @@ class CartsController {
             
 
         })
-            /* res.status(200).send({
-                 status: 'success',
-                 payload: cart
-             })*/
-           // res.send(cart)
+           
         } catch (error) {
             console.log("error")
         }
@@ -84,10 +80,7 @@ class CartsController {
    
 
 
-            // res.status(200).send({
-            //     status: 'success',
-            //     payload: cart
-            // })
+            
           
             res.redirect(`/api/carts/${cid}`)
 
@@ -102,10 +95,7 @@ class CartsController {
             const { pid } = req.params
 
             const cart = await CartsService.deleteProduct(cid, pid)
-            // res.status(200).send({
-            //     status: 'success',
-            //     payload: cart
-            // })
+           
             res.redirect(`/api/carts/${cid}`)
         } catch (error) {
             console.log("error")
@@ -165,8 +155,7 @@ class CartsController {
                 for (const item of cart.Products) {
                     const idProduct = item.idProduct
                     const quantity = item.quantity
-                  // const product = await ProductsService.getProductById(idProduct)
-                  //  const stock = product.stock
+                  
                   const price = item.idProduct.price
                   const stock = item.idProduct.stock
                   
@@ -174,12 +163,12 @@ class CartsController {
                         leftProducts.push(idProduct._id)
 
                     } else {
-                       // const respuesta = await ProductsService.updateProduct(idProduct, {quantity: stock-quantity})
+                       
                        totalCompra += quantity*price
 
 
                     }
-                   // let  amount= await cart.Products.filter(product => !leftProducts.includes(item.idProduct)).reduce()
+                   
                 }
                
 
@@ -187,7 +176,7 @@ class CartsController {
                 console.log(email)
                 const ticket = await TicketService.newTicket(randomUUID(), totalCompra,email)
                    
-                   // 
+                   
                   
 
 
@@ -221,57 +210,7 @@ class CartsController {
             catch {
                 console.log("error")
             }
-        // try {
-        //     const { CID } = req.params
-
-        //     const { products } = await CartsService.getById(CID) ?? {}
-
-        //     if (!products) return res.status(404).sendUserError("Cart not found")
-        //     if (products.length === 0) return res.status(400).sendUserError('Cart is empty')
-
-        //     //Array con los productos que no son comprables
-        //     const unbuyableProducts = products.filter(Products => Products.idProduct.stock < Products.quantity).map(item => item.idProduct.toString())
-
-        //     let totalCompra = 0;
-        //     //Se pueden comprar todos los productos
-        //     if (unbuyableProducts.length === 0) {
-        //         products.forEach(async item => {
-        //             const { idProduct, quantity } = item
-        //             totalCompra += idProduct.price * quantity
-        //             await ProductsService.updateProduct(idProduct.toString(), { stock: idProduct.stock - quantity })
-        //             await CartsService.deleteCart(CID)
-
-        //         })
-        //         const generateTicket = await TicketService.newTicket(randomUUID(), totalCompra, "req.user.email")
-        //         return res.status(400).sendSuccess(generateTicket)
-        //     }
-
-        //     //Se guardan los productos que si están disponibles
-        //     const buyableProducts = [];
-
-        //     products.forEach(async item => {
-        //         const findBuyable = unbuyableProducts.find(noStockProductsid => noStockProductsid === item.idProduct.toString())
-        //         if (!findBuyable) buyableProducts.push(item)
-        //     })
-
-        //     //No se pudo comprar ningun producto
-        //     if (buyableProducts.length === 0) return res.status(400).sendUserError({ message: "Can't complete the purchase process", products: unbuyableProducts })
-
-        //     //Se pueden comprar algunos productos
-        //     for (const item of buyableProducts) {
-        //         const { idProduct, quantity } = item
-        //         totalCompra += idProduct.price * quantity
-        //         //actualizar los productos que si se compraron
-        //         await ProductsService.updateProduct(idProduct.toString(), { stock: idProduct.stock - quantity })
-        //         //Retirar del carrito los productos que si se compraron
-        //         await CartsService.deleteProduct(CID, idProduct.toString())
-        //     }
-        //     const generateTicket = await TicketService.newTicket(randomUUID(), totalCompra, "req.user.email")
-
-        //     res.status(200).sendSuccess({ message: 'Compra realizada', ticket: generateTicket, productosNoDisponibles: unbuyableProducts })
-        // } catch (error) {
-        //     return res.status(500)
-        // }
+       
     }
 
 

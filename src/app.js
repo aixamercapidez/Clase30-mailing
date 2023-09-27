@@ -94,47 +94,8 @@ app.set('view engine', 'handlebars')
 // hbs __________________________________________
 app.use('/', viewsRouter)
 
-const {messageModel}=require('./dao/mongo/model/message.model.js')
 
-let chat = []
 
-const getMessage = async ()=>{
-    try{
-        return await messageModel.find()
-    }catch(error){
-        throw new error (error)
-    }
-}
-
-io.on('connection', socket => {
-    console.log('Nuevo cliente conectado')
-    getMessage().then((messages)=>{
-        chat = messages
-        io.emit('messageLogs', chat)
-    })
-   
-
-    socket.on('authenticated', data => {
-        socket.broadcast.emit('newUserConnected', data)
-    })
-
-    socket.on('message',async(data)=>{
-        console.log(data)
-        try{
-            const newMessage =await messageModel.create(data)
-            chat.push(newMessage)
-            io.emit('messageLogs', chat)
-
-        }catch(error){
-            throw new error (error)
-
-        }
-    })
-    socket.on('disconnect',()=>{
-        console.log('usuario desconectado')
-    })
-
-})
 
 app.use((err, req, res, next)=>{
     console.log(err)

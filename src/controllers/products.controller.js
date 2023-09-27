@@ -18,7 +18,7 @@ class ProductsController {
             let userDB = await userModel.findOne({ email })
             let role = userDB.role
             let cartID = userDB.cartID
-            //const {role} = req.session.user
+            
 
 
             const { page = 1 } = req.query
@@ -44,7 +44,7 @@ class ProductsController {
                 query = { status: status }
             }
             let products = await productModel.paginate(query, { limit: limit, page: page, lean: true, sort: sortOptions })
-            //  let products = await ProductsService.getProducts()
+           
 
             const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages } = products
 
@@ -87,23 +87,12 @@ class ProductsController {
 
     AddProduct = async (req, res) => {
         try {
-            //const newProduct = req.body
-            // let result = await ProductsService.addProduct(newProduct)
-            // const {email} = req.session.user
-            // let userDB = await userModel.findOne({email})
-            // let role = userDB.role
+           
 
 
 
             let { title, description, price, code, stock, category, status } = req.body
-            // if (!title.trim() || !price || !code || !stock || !category || !description || !status) {
-            //     CustomErrors.productError({
-            //         name: "Product Creation Error",
-            //         code: productEnumError.UNDEFINED_OR_NULL_VALUES,
-            //         cause: nullOrEmptyValues(req.body),
-            //         message: 'Error trying to create a new product.'
-            //     })
-            // }
+           
             const { email } = req.session.user
             let userDB = await userModel.findOne({ email })
             const role = userDB.role

@@ -90,8 +90,7 @@ class SessionController {
             const { body: { email } } = req
 
             let user = await userModel.findOne({email})
-            //const userID = user?.nonSensitiveUser.userID
-            //const userID = userDB._id
+            
             const useremail = user.email
             let userID = user._id.toString()
             
@@ -131,8 +130,7 @@ class SessionController {
             const { body: { password } } = req
             console.log(UID)
             console.log(password)
-           // const {  password: hashedPassword } = await userModel.findOne({email})
-          // let user = await userModel.findOne({UID})
+           
          let user= await userModel.findById(UID).lean()
            const email=user.email
            const hashedPassword = user.password
