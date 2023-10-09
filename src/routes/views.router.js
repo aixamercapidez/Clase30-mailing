@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const { ProductsService } = require("../service/index")
-
-
+const {userModel} = require("../dao/mongo/model/user.model")
+const {auth} = require('../middlewares/auth.js')
 const {
 
     uploader,
@@ -9,34 +9,26 @@ const {
 } = require("../controllers/views.controller.js");
 const router = Router()
 
-router.get('/home', (req, res) => {
-    res.render('principal', {})
+router.get('/home', auth, async (req, res) => {
+    const { email } = req.session.user
+    let userDB = await userModel.findOne({ email })
+    let id = userDB._id.toString()
+    res.render('principal', {
+        id,
+    })
 })
 
 
-router.get('/realtimeproducts', (req, res) => {
+router.get('/realtimeproducts',auth,  (req, res) => {
     res.render('realTimeProducts', {})
 })
 
-router.get('/chat', (req, res) => {
+router.get('/chat', auth, (req, res) => {
     res.render('chat', {})
 })
 
 
-router.get('/', (req, res) => {
 
-    let user = users[Math.floor(Math.random() * users.length)]
-
-    let testUser = {
-        title: 'Mercadito Fede',
-        user,
-        isAdmin: user.role === 'admin',
-        food,
-        style: 'index.css'
-    }
-
-    res.render('index', testUser)
-})
 
 router.get('/register', (req, res) => {
     res.render('registerForm', {
@@ -52,7 +44,7 @@ router.post('/register', (req, res) => {
         mensaje: 'Regístro con éxito'
     })
 })
-router.get("/realTimeProducts", async (req, res) => {
+router.get("/realTimeProducts",auth, async (req, res) => {
     const { payload } = await productManager.getProducts();
     const object = {
         style: "index.css",
@@ -106,7 +98,7 @@ router.get('/api/users/:UID/documents', (req, res) => {
 
 
 
-router.get('/adminpanel', async (req, res) => {
+router.get('/adminpanel',async (req, res) => {
 
 
 
@@ -162,7 +154,7 @@ router.get('/adminpanel', async (req, res) => {
 router.get('/product/:pid', async (req, res) => {
     const { first_name } = req.session.user
     const { last_name } = req.session.user
-    const { email } = req.session.user
+    const  email  = req.session.user.email
     const { pid } = req.params
     let userDB = await userModel.findOne({ email })
     let role = userDB.role

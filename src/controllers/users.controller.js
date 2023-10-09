@@ -156,7 +156,11 @@ class UserController {
             }
 
             const newRole = await UserService.updateUser(UID, update)
-            res.send(newRole)
+            res.status(200).send({
+                status: 'role changed successfully',
+                
+                
+            })
            
             console.log("usuario cambiado correctamente")
         } catch (error) {
@@ -209,4 +213,4 @@ class UserController {
 }
 
 
-module.exports = new UserController()
+module.exports = UserController

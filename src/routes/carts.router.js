@@ -1,24 +1,23 @@
-const {Router} =require('express')
 
-const router = Router()
-const{getCarts, CreateCart, getById,AddProduct,DeleteProduct,Deletecart,UpdateCart,UpdateQuantity,purchase}=require("../controllers/carts.controller.js")
 
-router.get('/', getCarts)
+const CartsController = require("../controllers/carts.controller");
 
-router.post('/', CreateCart)
+const RouterClass = require("./RouterClass");
 
-router.get('/:cid', getById)
+const cart = new CartsController()
 
-router.get('/:cid/products/:pid', AddProduct)
+class CartRouter extends RouterClass {
+    init() {
+        this.get('/', ['PUBLIC'], cart.getCarts)
+        this.post('/', ['PUBLIC'], cart.CreateCart)
+        this.get('/:cid', ['PUBLIC'], cart.getById)
+        this.get('/:cid/products/:pid', ['USER', 'PREMIUM'], cart.AddProduct)
+        this.get('/delete/:cid/product/:pid', ['USER', "PREMIUM", "ADMIN"], cart.DeleteProduct)
+        this.delete('/:cid', ['PUBLIC'], cart.Deletecart)
+        this.put('/:cid', ['PUBLIC'], cart.UpdateCart)
+        this.put('/:cid/product/:pid', ['PUBLIC'], cart.UpdateQuantity)
+        this.get('/:cid/purchase', ['USER', "PREMIUM", "ADMIN"], cart.purchase)
+    }
+}
 
-router.get('/delete/:cid/product/:pid',DeleteProduct )
-
-router.delete('/:cid',Deletecart )
-
-router.put('/:cid', UpdateCart)
-
-router.put('/:cid/product/:pid', UpdateQuantity )
-
-router.get('/:cid/purchase',purchase)
-
-module.exports = router
+module.exports = CartRouter

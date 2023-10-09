@@ -174,4 +174,4 @@ class SessionController {
 
 }
 
-module.exports= new SessionController()
+module.exports= SessionController

@@ -1,17 +1,20 @@
-const { Router } = require('express')
 
 
-const router = Router()
-const{getProducts,getById, AddProduct, UpdateProduct,DeleteProduct}=require("../controllers/products.controller.js")
+const ProductsController = require("../controllers/products.controller");
 
-router.get('/', getProducts)
+const RouterClass = require("./RouterClass");
 
-router.get('/:pid',getById )
+const product = new ProductsController()
 
-router.post('/', AddProduct)
 
-router.put('/:pid', UpdateProduct)
+class ProductRouter extends RouterClass {
+    init() {
+        this.get('/', ['PUBLIC'],product.getProducts)
+        this.get('/:pid', ['PUBLIC'], product.getById)
+        this.post('/', ['ADMIN', 'PREMIUM'], product.AddProduct)
+        this.put('/:pid', ['ADMIN', 'PREMIUM'], product.UpdateProduct)
+        this.get('/delete/:pid', ['ADMIN', 'PREMIUM'], product.DeleteProduct)
+    }
+}
 
-router.get('/delete/:pid',DeleteProduct )
-
-module.exports = router
+module.exports = ProductRouter

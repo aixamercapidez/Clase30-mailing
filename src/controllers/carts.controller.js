@@ -3,7 +3,7 @@ const { ProductsService } = require("../service/index")
 const { uuidv4 } = require('uuidv4')
 const { randomUUID } = require('crypto')
 const sendMail = require('../utils/sendmail')
-const {userModel} = require("../dao/mongo/model/user.model")
+const { userModel } = require("../dao/mongo/model/user.model")
 class CartsController {
     getCarts = async (req, res) => {
         try {
@@ -39,15 +39,20 @@ class CartsController {
 
     getById = async (req, res) => {
         try {
-            const { cid } = req.params
-            const cart = await CartsService.getCartById(cid)
-            const { Products } = await CartsService.getCartById(cid)
+            const {cid} = req.params
+            
+            
+            const {Products}  = await CartsService.getCartById(cid)
             const { first_name } = req.session.user
             const { last_name } = req.session.user
-            const { email } = req.session.user
+            const email = req.session.user.email
+            
             let userDB = await userModel.findOne({ email })
             let role = userDB.role
             let cartID = userDB.cartID
+            
+
+
             res.render('cart', {
                 first_name,
                 last_name,
@@ -55,12 +60,15 @@ class CartsController {
                 Products,
                 role,
                 cid,
+                cartID,
                 
-                
-            
 
-        })
-           
+
+
+
+
+            })
+
         } catch (error) {
             console.log("error")
         }
@@ -71,18 +79,34 @@ class CartsController {
             const { cid } = req.params
             const { pid } = req.params
 
-
+            const { email } = req.session.user
+            let userDB = await userModel.findOne({ email })
             
+            
+            const id = userDB._id.toString()
+
+
+
             let product = await ProductsService.getProductById(pid)
+
+            if (id == product.owner){
+                res.status(403).send({
+                    status: 'access denied, you cant buy your own products',
+                    
+                })
+
+            }else{
+
+
             const cart = await CartsService.addProduct(cid, pid)
 
-            
-   
 
 
-            
-          
-            res.redirect(`/api/carts/${cid}`)
+
+
+
+
+            res.redirect(`/api/carts/${cid}`)}
 
         } catch (error) {
             console.log("error")
@@ -95,7 +119,7 @@ class CartsController {
             const { pid } = req.params
 
             const cart = await CartsService.deleteProduct(cid, pid)
-           
+
             res.redirect(`/api/carts/${cid}`)
         } catch (error) {
             console.log("error")
@@ -146,52 +170,52 @@ class CartsController {
         }
     }
     purchase = async (req, res) => {
-            try {
-                const { cid } = req.params
-                const cart = await CartsService.getCartById(cid)
-                if (!cart) return error
-                let totalCompra = 0;
-                let leftProducts = []
-                for (const item of cart.Products) {
-                    const idProduct = item.idProduct
-                    const quantity = item.quantity
-                  
-                  const price = item.idProduct.price
-                  const stock = item.idProduct.stock
-                  
-                    if (quantity > stock) {
-                        leftProducts.push(idProduct._id)
+        try {
+            const { cid } = req.params
+            const cart = await CartsService.getCartById(cid)
+            if (!cart) return error
+            let totalCompra = 0;
+            let leftProducts = []
+            for (const item of cart.Products) {
+                const idProduct = item.idProduct
+                const quantity = item.quantity
 
-                    } else {
-                       
-                       totalCompra += quantity*price
+                const price = item.idProduct.price
+                const stock = item.idProduct.stock
 
-
-                    }
-                   
-                }
-               
-
-                const {email} = req.session.user
-                console.log(email)
-                const ticket = await TicketService.newTicket(randomUUID(), totalCompra,email)
-                   
-                   
-                  
-
-
-               
-
-                if (leftProducts.length > 0) {
-
-                    const updated = await CartsService.UpdateCart(cid, leftProducts)
+                if (quantity > stock) {
+                    leftProducts.push(idProduct._id)
 
                 } else {
-                    await CartsService.deleteCart(cid)
+
+                    totalCompra += quantity * price
+
+
                 }
 
+            }
 
-                const html = `
+
+            const { email } = req.session.user
+            console.log(email)
+            const ticket = await TicketService.newTicket(randomUUID(), totalCompra, email)
+
+
+
+
+
+
+
+            if (leftProducts.length > 0) {
+
+                const updated = await CartsService.UpdateCart(cid, leftProducts)
+
+            } else {
+                await CartsService.deleteCart(cid)
+            }
+
+
+            const html = `
                 <center>
                     <p>
                         enviamos su ticket ${ticket}
@@ -199,18 +223,18 @@ class CartsController {
                    
                 </center>
             `
-                sendMail(email, "ticket", html)
-                res.send({
-                    status: 'succes',
-                    payload:ticket
+            sendMail(email, "ticket", html)
+            res.send({
+                status: 'succes',
+                payload: ticket
 
 
-                })
-            }
-            catch {
-                console.log("error")
-            }
-       
+            })
+        }
+        catch {
+            console.log("error")
+        }
+
     }
 
 
@@ -223,4 +247,4 @@ class CartsController {
 
 
 
-module.exports = new CartsController()
+module.exports = CartsController

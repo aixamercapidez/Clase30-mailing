@@ -64,7 +64,7 @@ class CartManagerMongo {
             if (!cart) {
                 const cart = await cartModel.findOneAndUpdate(
                     { _id: cid },
-                    { $addToSet: { Products: { idProduct: pid, quantity: 1 } } },
+                    { $addToSet: { Products: { idProduct: pid, quantity: 1 , cartid:cid} } },
                     { new: true }
                 )
                 return cart

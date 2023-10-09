@@ -87,7 +87,7 @@ class ProductsController {
 
     AddProduct = async (req, res) => {
         try {
-           
+            
 
 
 
@@ -112,18 +112,14 @@ class ProductsController {
             console.log(newProduct)
 
 
-            if (role === "user") {
-                res.status(401).send({
-                    status: 'acces denied',
-
-                })
-            } else {
+            
+            
                 const result = await ProductsService.addProduct(newProduct)
                 res.status(200).send({
                     status: 'success',
                     payload: result
                 })
-            }
+            
         } catch (error) {
             console.log(error)
         }
@@ -169,19 +165,19 @@ class ProductsController {
             let role = userDB.role
             let userID = userDB._id.toString()
 
-            if (role === "user") {
+            // if (role === "user") {
 
-                res.status(401).send({
-                    status: 'acces denied',
+            //     res.status(401).send({
+            //         status: 'acces denied',
 
-                })
-            } else if (product1.owner !== userID) {
-                res.status(401).send({
-                    status: 'acces denied',
+            //     })
+              if (product1.owner !== userID) {
+                 res.status(401).send({
+                     status: 'acces denied',
 
-                })
-            }
-            else {
+                 })
+             } else {
+           
                 const html = `
                 <center>
                     <p>
@@ -196,12 +192,12 @@ class ProductsController {
                 res.status(200).send({
                     status: 'success',
                     payload: product
-                })
-            }
+                })}
+            
         } catch (error) {
             console.log(error)
         }
     }
 }
 
-module.exports = new ProductsController()
+module.exports = ProductsController

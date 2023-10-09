@@ -7,14 +7,13 @@
         <li>
             <strong>Title: </strong>{{idProduct.title}} -
         
-
             <strong>quantity:  </strong>{{this.quantity}}- 
 
            
             
         </li>
         
-        <a href="/api/carts/delete/{{cid}}/product/{{idProduct._id}}"><button>eliminar producto</button></a>
+        <a href="/api/carts/delete/{{this.cartid}}/product/{{idProduct._id}}"><button>eliminar producto</button></a>
     {{/each}}
     <br>
     <br>
